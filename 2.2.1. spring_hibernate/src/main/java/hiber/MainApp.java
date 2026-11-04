@@ -1,34 +1,65 @@
 package hiber;
 
 import hiber.config.AppConfig;
+import hiber.model.Car;
 import hiber.model.User;
 import hiber.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class MainApp {
-   public static void main(String[] args) throws SQLException {
-      AnnotationConfigApplicationContext context = 
-            new AnnotationConfigApplicationContext(AppConfig.class);
 
-      UserService userService = context.getBean(UserService.class);
+    public static void main(String[] args) {
 
-      userService.add(new User("User1", "Lastname1", "user1@mail.ru"));
-      userService.add(new User("User2", "Lastname2", "user2@mail.ru"));
-      userService.add(new User("User3", "Lastname3", "user3@mail.ru"));
-      userService.add(new User("User4", "Lastname4", "user4@mail.ru"));
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
 
-      List<User> users = userService.listUsers();
-      for (User user : users) {
-         System.out.println("Id = "+user.getId());
-         System.out.println("First Name = "+user.getFirstName());
-         System.out.println("Last Name = "+user.getLastName());
-         System.out.println("Email = "+user.getEmail());
-         System.out.println();
-      }
+        try {
+            UserService userService = context.getBean(UserService.class);
 
-      context.close();
-   }
+            // Создаем пользователей с автомобилями
+            User user1 = new User("Ivan", "Ivanov", "ivan@mail.ru",
+                    new Car("BMW", 5));
+
+            User user2 = new User("Petr", "Petrov", "petr@mail.ru",
+                    new Car("Mercedes", 3));
+
+            User user3 = new User("Alex", "Sidorov", "alex@mail.ru",
+                    new Car("Audi", 6));
+
+            User user4 = new User("Artem", "Smirnov", "artem@mail.ru",
+                    new Car("Toyota", 7));
+
+            // Сохраняем пользователей и автомобили
+            userService.add(user1);
+            userService.add(user2);
+            userService.add(user3);
+            userService.add(user4);
+
+            // Получаем пользователей из базы данных
+            System.out.println("\n=== ALL USERS ===");
+
+            List<User> users = userService.listUsers();
+
+            for (User user : users) {
+                System.out.println(user);
+            }
+
+            // Ищем владельца BMW 5 серии
+            System.out.println("\n=== SEARCH USER BY CAR ===");
+
+            User foundUser = userService.getUserByCar("BMW", 5);
+
+            if (foundUser != null) {
+                System.out.println("Car owner found:");
+                System.out.println(foundUser);
+            } else {
+                System.out.println("User not found");
+            }
+
+        } finally {
+            context.close();
+        }
+    }
 }
