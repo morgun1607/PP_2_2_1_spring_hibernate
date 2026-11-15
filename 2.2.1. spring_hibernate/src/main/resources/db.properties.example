@@ -2,7 +2,7 @@
 db.driver=com.mysql.cj.jdbc.Driver
 db.url=jdbc:mysql://127.0.0.1:3306/spring_hibernate?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 db.username=root
-db.password=YOUR_PASSWORD_HERE
+db.password=${KATA_DB_PASSWORD}
 
 # Hibernate properties
 hibernate.show_sql=true
