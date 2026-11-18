@@ -4,6 +4,3 @@
 
 # Maven
 target/
-
-# Local database credentials
-**/db.properties
